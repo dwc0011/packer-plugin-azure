@@ -66,8 +66,7 @@ type Config struct {
 	// and filesystem creation commands. The path to the device is provided by `{{.Device}}`.
 	PreMountCommands []string `mapstructure:"pre_mount_commands"`
 	// Optionally Skip Mounting the device. If true, the mount device step will
-	// not be performed. Images with LVM-encapsulated boot partitions
-	// can not be mounted properly and result in an invalid filesystem type error
+	// not be performed.
 	// Skipping requires using the pre and post mount commands
 	// handle the mappings and mount as needed.
 	SkipMountDevice bool `mapstructure:"skip_mount_device" required:"false"`
@@ -83,7 +82,7 @@ type Config struct {
 	MountPath string `mapstructure:"mount_path"`
 	// As `pre_mount_commands`, but the commands are executed after mounting the root device and before the
 	// extra mount and copy steps. The device and mount path are provided by `{{.Device}}` and `{{.MountPath}}`.
-	PostMountCommands []string `mapstructure:"post_mount_commands"`	
+	PostMountCommands []string `mapstructure:"post_mount_commands"`
 	// This is a list of devices to mount into the chroot environment. This configuration parameter requires
 	// some additional documentation which is in the "Chroot Mounts" section below. Please read that section
 	// for more information on how to use this.
@@ -618,14 +617,17 @@ func buildsteps(
 			Commands: config.PreMountCommands,
 		},
 	)
+
 	if !config.SkipMountDevice {
 		addSteps(
-		&StepMountDevice{
-			MountOptions:   config.MountOptions,
-			MountPartition: config.MountPartition,
-			MountPath:      config.MountPath,
-		},
-	)
+			&StepMountDevice{
+				MountOptions:   config.MountOptions,
+				MountPartition: config.MountPartition,
+				MountPath:      config.MountPath,
+			},
+		)
+	}
+
 	addSteps(
 		&chroot.StepPostMountCommands{
 			Commands: config.PostMountCommands,
