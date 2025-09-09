@@ -65,6 +65,12 @@ type Config struct {
 	// This is not required unless using `from_scratch`. If so, this should include any partitioning
 	// and filesystem creation commands. The path to the device is provided by `{{.Device}}`.
 	PreMountCommands []string `mapstructure:"pre_mount_commands"`
+	// Optionally Skip Mounting the device. If true, the mount device step will
+	// not be performed. Images with LVM-encapsulated boot partitions
+	// can not be mounted properly and result in an invalid filesystem type error
+	// Skipping requires using the pre and post mount commands
+	// handle the mappings and mount as needed.
+	SkipMountDevice bool `mapstructure:"skip_mount_device" required:"false"`
 	// Options to supply the `mount` command when mounting devices. Each option will be prefixed with
 	// `-o` and supplied to the `mount` command ran by Packer. Because this command is ran in a shell,
 	// user discretion is advised. See this manual page for the `mount` command for valid file system specific options.
@@ -77,7 +83,7 @@ type Config struct {
 	MountPath string `mapstructure:"mount_path"`
 	// As `pre_mount_commands`, but the commands are executed after mounting the root device and before the
 	// extra mount and copy steps. The device and mount path are provided by `{{.Device}}` and `{{.MountPath}}`.
-	PostMountCommands []string `mapstructure:"post_mount_commands"`
+	PostMountCommands []string `mapstructure:"post_mount_commands"`	
 	// This is a list of devices to mount into the chroot environment. This configuration parameter requires
 	// some additional documentation which is in the "Chroot Mounts" section below. Please read that section
 	// for more information on how to use this.
@@ -611,11 +617,16 @@ func buildsteps(
 		&chroot.StepPreMountCommands{
 			Commands: config.PreMountCommands,
 		},
+	)
+	if !config.SkipMountDevice {
+		addSteps(
 		&StepMountDevice{
 			MountOptions:   config.MountOptions,
 			MountPartition: config.MountPartition,
 			MountPath:      config.MountPath,
 		},
+	)
+	addSteps(
 		&chroot.StepPostMountCommands{
 			Commands: config.PostMountCommands,
 		},

@@ -36,6 +36,7 @@ type FlatConfig struct {
 	Source                            *string                            `mapstructure:"source" required:"true" cty:"source" hcl:"source"`
 	CommandWrapper                    *string                            `mapstructure:"command_wrapper" cty:"command_wrapper" hcl:"command_wrapper"`
 	PreMountCommands                  []string                           `mapstructure:"pre_mount_commands" cty:"pre_mount_commands" hcl:"pre_mount_commands"`
+	SkipMountDevice                   *bool                              `mapstructure:"skip_mount_device" required:"false" cty:"skip_mount_device" hcl:"skip_mount_device"`
 	MountOptions                      []string                           `mapstructure:"mount_options" cty:"mount_options" hcl:"mount_options"`
 	MountPartition                    *string                            `mapstructure:"mount_partition" cty:"mount_partition" hcl:"mount_partition"`
 	MountPath                         *string                            `mapstructure:"mount_path" cty:"mount_path" hcl:"mount_path"`
@@ -95,6 +96,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"source":                          &hcldec.AttrSpec{Name: "source", Type: cty.String, Required: false},
 		"command_wrapper":                 &hcldec.AttrSpec{Name: "command_wrapper", Type: cty.String, Required: false},
 		"pre_mount_commands":              &hcldec.AttrSpec{Name: "pre_mount_commands", Type: cty.List(cty.String), Required: false},
+		"skip_mount_device":               &hcldec.AttrSpec{Name: "skip_mount_device", Type: cty.Bool, Required: false},
 		"mount_options":                   &hcldec.AttrSpec{Name: "mount_options", Type: cty.List(cty.String), Required: false},
 		"mount_partition":                 &hcldec.AttrSpec{Name: "mount_partition", Type: cty.String, Required: false},
 		"mount_path":                      &hcldec.AttrSpec{Name: "mount_path", Type: cty.String, Required: false},
