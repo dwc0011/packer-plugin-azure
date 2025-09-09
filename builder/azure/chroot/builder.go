@@ -612,31 +612,31 @@ func buildsteps(
 
 	addSteps(
 		&StepAttachDisk{}, // uses os_disk_resource_id and sets 'device' in stateBag
-		&chroot.StepPreMountCommands{
-			Commands: config.PreMountCommands,
-		},
 	)
 
 	if !config.SkipMountDevice {
 		addSteps(
+			&chroot.StepPreMountCommands{
+				Commands: config.PreMountCommands,
+			},
 			&StepMountDevice{
 				MountOptions:   config.MountOptions,
 				MountPartition: config.MountPartition,
 				MountPath:      config.MountPath,
 			},
+			&chroot.StepPostMountCommands{
+				Commands: config.PostMountCommands,
+			},
+			&chroot.StepMountExtra{
+				ChrootMounts: config.ChrootMounts,
+			},
+			&chroot.StepCopyFiles{
+				Files: config.CopyFiles,
+			},
 		)
 	}
 
 	addSteps(
-		&chroot.StepPostMountCommands{
-			Commands: config.PostMountCommands,
-		},
-		&chroot.StepMountExtra{
-			ChrootMounts: config.ChrootMounts,
-		},
-		&chroot.StepCopyFiles{
-			Files: config.CopyFiles,
-		},
 		&chroot.StepChrootProvision{},
 		&chroot.StepEarlyCleanup{},
 	)
