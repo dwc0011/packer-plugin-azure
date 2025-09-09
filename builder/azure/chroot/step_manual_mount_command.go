@@ -103,7 +103,7 @@ func (s *StepManualMountCommand) CleanupFunc(state multistep.StateBag) error {
 
 	ui := state.Get("ui").(packersdk.Ui)
 
-	ui.Say("Skipping Unmounting the root device, it is manuall unmounted via manual mount command script...")
+	ui.Say("Skipping Unmounting the root device, it is manually unmounted via manual mount command script...")
 
 	s.mountPath = ""
 	return nil
