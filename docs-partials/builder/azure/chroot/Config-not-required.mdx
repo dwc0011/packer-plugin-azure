@@ -6,13 +6,13 @@
   a command with sudo or so on. This is a configuration template where the `.Command` variable
   is replaced with the command to be run. Defaults to `{{.Command}}`.
 
+- `manual_mount_command` (string) - Manual Mount Command that is executed to manually mount the
+  root device and before the post mount commands. The device and
+  mount path are provided by `{{.Device}}` and `{{.MountPath}}`.
+
 - `pre_mount_commands` ([]string) - A series of commands to execute after attaching the root volume and before mounting the chroot.
   This is not required unless using `from_scratch`. If so, this should include any partitioning
   and filesystem creation commands. The path to the device is provided by `{{.Device}}`.
-
-- `skip_mount_device` (bool) - Optionally skip mounting the device.  Default false.  If true, 
-  the pre_mount_commands, mount device, post_mount_commands, mount extra and copy files steps 
-  are all skipped. A custom provisioner must be used to manually configure and mount the device.
 
 - `mount_options` ([]string) - Options to supply the `mount` command when mounting devices. Each option will be prefixed with
   `-o` and supplied to the `mount` command ran by Packer. Because this command is ran in a shell,
