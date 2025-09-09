@@ -10,8 +10,9 @@
   This is not required unless using `from_scratch`. If so, this should include any partitioning
   and filesystem creation commands. The path to the device is provided by `{{.Device}}`.
 
-- `skip_mount_device` (bool) - Optionally skip mounting the device.  Default false.  If true, the mount device
-  step will not be performed and the pre and post mount commands must be used to manually mount
+- `skip_mount_device` (bool) - Optionally skip mounting the device.  Default false.  If true, 
+  the pre_mount_commands, mount device step, post_mount_commands, and mount extra steps are skipped.  
+  A custom provisioner must be used to manually configure and mount the device
 
 - `mount_options` ([]string) - Options to supply the `mount` command when mounting devices. Each option will be prefixed with
   `-o` and supplied to the `mount` command ran by Packer. Because this command is ran in a shell,

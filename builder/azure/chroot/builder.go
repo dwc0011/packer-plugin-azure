@@ -61,15 +61,14 @@ type Config struct {
 	// a command with sudo or so on. This is a configuration template where the `.Command` variable
 	// is replaced with the command to be run. Defaults to `{{.Command}}`.
 	CommandWrapper string `mapstructure:"command_wrapper"`
+	// Optionally Skip Mounting the device. If true, no mount steps
+	// will be performed.  A custom provisioner must be used to handle
+	// mounting the device.
+	SkipMountDevice bool `mapstructure:"skip_mount_device" required:"false"`
 	// A series of commands to execute after attaching the root volume and before mounting the chroot.
 	// This is not required unless using `from_scratch`. If so, this should include any partitioning
 	// and filesystem creation commands. The path to the device is provided by `{{.Device}}`.
 	PreMountCommands []string `mapstructure:"pre_mount_commands"`
-	// Optionally Skip Mounting the device. If true, the mount device step will
-	// not be performed.
-	// Skipping requires using the pre and post mount commands
-	// handle the mappings and mount as needed.
-	SkipMountDevice bool `mapstructure:"skip_mount_device" required:"false"`
 	// Options to supply the `mount` command when mounting devices. Each option will be prefixed with
 	// `-o` and supplied to the `mount` command ran by Packer. Because this command is ran in a shell,
 	// user discretion is advised. See this manual page for the `mount` command for valid file system specific options.
