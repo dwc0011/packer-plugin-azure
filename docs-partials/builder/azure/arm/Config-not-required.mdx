@@ -9,7 +9,7 @@
 
 - `capture_name_prefix` (string) - VHD prefix.
 
-- `capture_container_name` (string) - Destination container name.
+- `capture_container_name` (string) - Destination container name. This must be created before the build in the storage account
 
 - `shared_image_gallery` (SharedImageGallery) - Use a [Shared Gallery
   image](https://azure.microsoft.com/en-us/blog/announcing-the-public-preview-of-shared-image-gallery/)
@@ -359,9 +359,8 @@
   for more information.
   
   For VHD builds the final artifacts will be named
-  `PREFIX-dataDisk-<n>.UUID.vhd` and stored in the specified capture
-  container along side the OS disk. The additional disks are included in
-  the deployment template `PREFIX-vmTemplate.UUID`.
+  `<PREFIX><dataDisk>-<n>.vhd` and stored in the specified capture
+  container along-side the OS disk.
   
   For Managed build the final artifacts are included in the managed image.
   The additional disk will have the same storage account type as the OS
