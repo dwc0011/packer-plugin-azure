@@ -12,17 +12,27 @@ import (
 	"time"
 )
 
-func diskPathForLun(lun int64) string {
-	return fmt.Sprintf("/dev/disk/azure/scsi1/lun%d", lun)
-}
-
 func (da diskAttacher) WaitForDevice(ctx context.Context, lun int64) (device string, err error) {
-	path := diskPathForLun(lun)
+	scsiPath := fmt.Sprintf("/dev/disk/azure/scsi1/lun%d", lun)
+	nvmePath := fmt.Sprintf("/dev/disk/azure/nvme/lun%d", lun)
 
 	for {
-		link, err := os.Readlink(path)
-		if err == nil {
-			return filepath.Abs("/dev/disk/azure/scsi1/" + link)
+
+		if resolved, err := filepath.EvalSymlinks(nvmePath); err == nil {
+			if _, err := os.Stat(resolved); err == nil {
+				return resolved, nil
+			}
+		} else if err != os.ErrNotExist {
+			if pe, ok := err.(*os.PathError); ok && pe.Err != syscall.ENOENT {
+				return "", err
+			}
+		}
+
+		// Check SCSI
+		if resolved, err := filepath.EvalSymlinks(scsiPath); err == nil {
+			if _, err := os.Stat(resolved); err == nil {
+				return resolved, nil
+			}
 		} else if err != os.ErrNotExist {
 			if pe, ok := err.(*os.PathError); ok && pe.Err != syscall.ENOENT {
 				return "", err

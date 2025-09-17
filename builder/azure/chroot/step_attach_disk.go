@@ -40,7 +40,7 @@ func (s *StepAttachDisk) Run(ctx context.Context, state multistep.StateBag) mult
 		return multistep.ActionHalt
 	}
 
-	ui.Say("Disk attached, waiting for device to show up")
+	ui.Say(fmt.Sprintf("Disk attached, waiting for device to show up lun=%s", lun))
 	ctx, cancel := context.WithTimeout(ctx, time.Minute*3) // in case is not configured correctly
 	defer cancel()
 	device, err := da.WaitForDevice(ctx, lun)
