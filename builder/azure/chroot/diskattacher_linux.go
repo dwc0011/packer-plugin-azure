@@ -65,7 +65,9 @@ func GetDeviceByLUN(lun int64) (string, bool, error) {
 		serial := strings.TrimSpace(string(data))
 		if strings.HasSuffix(serial, fmt.Sprintf("%d", lun+1)) { // adjust if needed
 			device := filepath.Base(filepath.Dir(serialPath)) // nvme0n1
-			return "/dev/" + device, true, nil
+			devicePath := fmt.Sprintf("/dev/%s", device)
+			log.Printf("Device:%s", devicePath)
+			return devicePath, true, nil
 		}
 	}
 
