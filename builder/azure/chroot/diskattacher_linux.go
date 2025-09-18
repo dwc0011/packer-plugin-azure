@@ -105,7 +105,7 @@ func (da diskAttacher) WaitForDevice(ctx context.Context, lun int64) (device str
 			return device, nil
 		}
 
-		log.Printf("Not attached yet, checking for scsiPath path %s", scsiPath)
+		log.Printf("Not attached yet, waiting")
 		select {
 		case <-time.After(100 * time.Millisecond):
 			// continue
