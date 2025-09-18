@@ -40,9 +40,10 @@ func (s *StepAttachDisk) Run(ctx context.Context, state multistep.StateBag) mult
 		return multistep.ActionHalt
 	}
 
-	ui.Say(fmt.Sprintf("Disk attached, waiting for device to show up lun=%s", lun))
+	ui.Say(fmt.Sprintf("Disk attached, waiting for device to show up lun=%d", lun))
 	ctx, cancel := context.WithTimeout(ctx, time.Minute*3) // in case is not configured correctly
 	defer cancel()
+	log.Printf("Disk attached, waiting for lun %d device to show up", lun)
 	device, err := da.WaitForDevice(ctx, lun)
 	if err != nil {
 		log.Printf("StepAttachDisk.Run: error: %+v", err)

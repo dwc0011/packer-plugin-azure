@@ -12,9 +12,12 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/hashicorp/packer-plugin-azure/builder/azure/common/log"
 )
 
 func (da diskAttacher) WaitForDevice(ctx context.Context, lun int64) (device string, err error) {
+	log.Printf("Wait for FREEBSD Device lun %d to show up.", lun)
 	// This builder will always be running in Azure, where data disks show up
 	// on scbus5 target 0. The camcontrol command always outputs LUNs in
 	// unpadded hexadecimal format.
