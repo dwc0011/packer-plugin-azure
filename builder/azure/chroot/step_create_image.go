@@ -27,6 +27,7 @@ type StepCreateImage struct {
 	DataDiskStorageAccountType string
 	DataDiskCacheType          string
 	Location                   string
+	HyperVGeneration           string
 
 	create func(ctx context.Context, client client.AzureClientSet, id images.ImageId, image images.Image) error
 }
@@ -62,6 +63,7 @@ func (s *StepCreateImage) Run(ctx context.Context, state multistep.StateBag) mul
 	image := images.Image{
 		Location: s.Location,
 		Properties: &images.ImageProperties{
+			HyperVGeneration: (*images.HyperVGenerationTypes)(&s.HyperVGeneration),
 			StorageProfile: &images.ImageStorageProfile{
 				OsDisk: &images.ImageOSDisk{
 					OsState: images.OperatingSystemStateTypes(s.ImageOSState),

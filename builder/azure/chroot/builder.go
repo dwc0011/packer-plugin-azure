@@ -662,6 +662,7 @@ func buildsteps(
 				OSDiskCacheType:          config.OSDiskCacheType,
 				OSDiskStorageAccountType: config.OSDiskStorageAccountType,
 				Location:                 info.Location,
+				HyperVGeneration:         config.ImageHyperVGeneration,
 			}),
 		)
 	}
