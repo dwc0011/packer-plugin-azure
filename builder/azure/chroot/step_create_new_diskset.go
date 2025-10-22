@@ -122,7 +122,7 @@ func (s *StepCreateNewDiskset) Run(ctx context.Context, state multistep.StateBag
 				ui.Say(fmt.Sprintf("Creating disk %q", datadiskID))
 				err = s.create(ctx, azcli, diskId, disk)
 				if err != nil {
-					return errorMessage("Failed to create disk: %q", datadiskID)
+					return errorMessage("Failed to create disk: %q, %v", datadiskID, err)
 				}
 				ui.Say(fmt.Sprintf("Disk created %q", datadiskID))
 				s.disks[ddi.Lun] = datadiskID           // save the resoure we just create in our disk set
@@ -207,11 +207,15 @@ func (s StepCreateNewDiskset) getDatadiskDefinitionFromImage(lun int64) disks.Di
 }
 
 func (s *StepCreateNewDiskset) createDiskset(ctx context.Context, azcli client.AzureClientSet, id commonids.ManagedDiskId, disk disks.Disk) error {
+	log.Printf("CreateDiskSet get pollingContext")
 	pollingContext, cancel := context.WithTimeout(ctx, azcli.PollingDuration())
+	log.Printf("CreateDiskSet complete - begin defer cancel")
 	defer cancel()
-
+	log.Printf("Defer cancel complete - beting CreateOrUpdateThenPoll")
 	err := azcli.DisksClient().CreateOrUpdateThenPoll(pollingContext, id, disk)
 	if err != nil {
+		error_msg := fmt.Errorf("createDiskset: error: "+"Error CreateOrUpdateThenPoll %v", err)
+		log.Printf("%v", error_msg.Error())
 		return err
 	}
 	return nil
